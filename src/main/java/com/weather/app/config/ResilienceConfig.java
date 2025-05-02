@@ -1,5 +1,6 @@
 package com.weather.app.config;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.retry.RetryConfig;
 import io.github.resilience4j.retry.RetryRegistry;
@@ -9,11 +10,11 @@ import org.springframework.context.annotation.Configuration;
 import java.time.Duration;
 
 @Configuration
-public class CircuitBreakerConfig {
+public class ResilienceConfig {
 
     @Bean
     public CircuitBreakerRegistry circuitBreakerRegistry() {
-        io.github.resilience4j.circuitbreaker.CircuitBreakerConfig circuitBreakerConfig = io.github.resilience4j.circuitbreaker.CircuitBreakerConfig.custom()
+        CircuitBreakerConfig circuitBreakerConfig = CircuitBreakerConfig.custom()
                 .slidingWindowSize(5)
                 .failureRateThreshold(50)
                 .waitDurationInOpenState(Duration.ofSeconds(10))
