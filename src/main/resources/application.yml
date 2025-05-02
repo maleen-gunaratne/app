@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+weather:
+  api:
+    weatherStack:
+      url: http://api.weatherstack.com/current
+      key: 9793ecbe97cb1fa90103bb5919589c86
+    openWeatherMap:
+      url: http://api.openweathermap.org/data/2.5/weather
+      key: 2326504fb9b100bee21400190e4dbe6d
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      weatherService:
+        registerHealthIndicator: true
+        slidingWindowSize: 5
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 2
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        recordExceptions:
+          - com.weather.app.exception.WeatherProviderException
+          - java.lang.Exception
+  retry:
+    instances:
+      weatherService:
+        maxAttempts: 3
+        waitDuration: 2s
+        enableExponentialBackoff: true
+        exponentialBackoffMultiplier: 2
+        retryExceptions:
+          - com.weather.app.exception.WeatherProviderException
+          - java.lang.Exception
